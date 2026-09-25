@@ -1,4 +1,5 @@
 from random import randint
+
 import pygame
 
 # Константы для размеров поля и сетки:
@@ -75,7 +76,7 @@ class Apple(GameObject):
 
 
 class Snake(GameObject):
-    """Создание класса змейки
+    """ Создание класса змейки.
 
     Отвечает за движение, хранение длины и позиций сегментов тела.
     """
