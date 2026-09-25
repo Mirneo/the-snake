@@ -45,7 +45,7 @@ class GameObject:
     Отвечает за отрисовку, хранение позиции и цвета тела.
     """
 
-    def __init__(self, position, body_color):
+    def __init__(self, position=None, body_color=None):
         """Инициализация объекта с позицией и цветом тела."""
         self.position = position
         self.body_color = body_color
@@ -63,12 +63,12 @@ class Apple(GameObject):
     Отвечает за генерацию случайной позиции яблока на игровом поле.
     """
 
-    def __init__(self, position, body_color):
+    def __init__(self, position=None, body_color=None):
         """Инициализация яблока с позицией и цветом тела."""
         super().__init__(position, body_color)
 
     @staticmethod
-    def random_position():
+    def randomize_position():
         """Генерация случайной позиции яблока на игровом поле."""
         x = randint(0, GRID_WIDTH - 1) * GRID_SIZE
         y = randint(0, GRID_HEIGHT - 1) * GRID_SIZE
@@ -81,7 +81,7 @@ class Snake(GameObject):
     Отвечает за движение, хранение длины и позиций сегментов тела.
     """
 
-    def __init__(self, position, body_color):
+    def __init__(self, position=None, body_color=None):
         """Инициализация змейки с позицией и цветом тела."""
         super().__init__(position, body_color)
         self.length = 1
@@ -193,7 +193,7 @@ def main():
     """
     pygame.init()
     snake = Snake((SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2), SNAKE_COLOR)
-    apple = Apple(Apple.random_position(), APPLE_COLOR)
+    apple = Apple(Apple.randomize_position(), APPLE_COLOR)
     while True:
         clock.tick(SPEED)
 
@@ -204,7 +204,7 @@ def main():
         # Проверка на столкновение змейки с яблоком
         if snake.get_head_position() == apple.position:
             snake.length += 1  # Увеличиваем длину змейки с хвоста
-            apple.position = Apple.random_position()  # Перемещаем яблоко
+            apple.position = Apple.randomize_position()  # Перемещаем яблоко
 
         if snake.get_head_position() in snake.positions[1:]:
             snake.reset()  # Сброс змейки при столкновении с самой собой
