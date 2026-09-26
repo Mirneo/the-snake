@@ -66,6 +66,7 @@ class Apple(GameObject):
         super().__init__(position, body_color)
 
     def randomize_position(self, snake_positions):
+        """Генерация случайной позиции яблока на игровом поле."""
         while True:
             x_position = randint(0, GRID_WIDTH - 1) * GRID_SIZE
             y_position = randint(0, GRID_HEIGHT - 1) * GRID_SIZE
@@ -83,6 +84,7 @@ class Apple(GameObject):
         )
         pygame.draw.rect(screen, self.body_color, rect)
         pygame.draw.rect(screen, BORDER_COLOR, rect, 1)
+
 
 class Snake(GameObject):
     """Создание класса змейки.
@@ -150,7 +152,6 @@ class Snake(GameObject):
         Отвечает за отрисовку сегментов тела змейки и головы змейки.
         Затирает последний сегмент змейки, если он был удален в движении.
         """
-
         #  Отрисовка головы змейки
         head_rect = pygame.Rect(
             self.get_head_position(),
