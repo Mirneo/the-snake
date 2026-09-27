@@ -61,20 +61,22 @@ class Apple(GameObject):
     Отвечает за генерацию случайной позиции яблока на игровом поле.
     """
 
-    def __init__(self, position=None, body_color=None):
+    def __init__(self, position=None, body_color=APPLE_COLOR):
         """Инициализация яблока с позицией и цветом тела."""
         super().__init__(position, body_color)
 
     def randomize_position(self, snake_positions):
         """Генерация случайной позиции яблока на игровом поле."""
-        while True:
+        x_position = randint(0, GRID_WIDTH - 1) * GRID_SIZE
+        y_position = randint(0, GRID_HEIGHT - 1) * GRID_SIZE
+        new_position = (x_position, y_position)
+
+        while new_position in snake_positions:
             x_position = randint(0, GRID_WIDTH - 1) * GRID_SIZE
             y_position = randint(0, GRID_HEIGHT - 1) * GRID_SIZE
             new_position = (x_position, y_position)
 
-            if new_position not in snake_positions:
-                self.position = new_position
-                break
+        self.position = new_position
 
     def draw(self):
         """Отрисовывает яблоко на экране."""
@@ -92,7 +94,7 @@ class Snake(GameObject):
     Отвечает за движение, хранение длины и позиций сегментов тела.
     """
 
-    def __init__(self, position=None, body_color=None):
+    def __init__(self, position=None, body_color=SNAKE_COLOR):
         """Инициализация змейки с позицией и цветом тела."""
         super().__init__(position, body_color)
         self.length = 1
@@ -133,25 +135,24 @@ class Snake(GameObject):
 
         new_position = (new_x, new_y)
 
-        self.last = self.positions[-1]
         self.positions.insert(0, new_position)
 
         if len(self.positions) > self.length:
             self.last = self.positions.pop()
+        else:
+            self.last = None
 
     def reset(self):
         """Сбрасывает змейку в начальное состояние."""
-        self.__init__(
-            (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2),
-            self.body_color,
-        )
+        self.position = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+        self.length = 1
+        self.positions = [self.position]
+        self.direction = RIGHT
+        self.next_direction = None
+        self.last = None
 
     def draw(self):
-        """Отрисовка змейки на экране.
-
-        Отвечает за отрисовку сегментов тела змейки и головы змейки.
-        Затирает последний сегмент змейки, если он был удален в движении.
-        """
+        """Отрисовка головы змейки на экране."""
         #  Отрисовка головы змейки
         head_rect = pygame.Rect(
             self.get_head_position(),
@@ -184,15 +185,14 @@ def handle_keys(game_object):
 
 
 def main():
-    """
-    Основная функция игры.
+    """Основная функция игры.
 
     Отвечает за инициализацию игры, создание объектов змейки и яблока,
     обработку событий, обновление состояния игры и отрисовку объектов.
     """
     pygame.init()
-    snake = Snake((SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2), SNAKE_COLOR)
-    apple = Apple(None, APPLE_COLOR)
+    snake = Snake((SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+    apple = Apple()
     apple.randomize_position(snake.positions)
     while True:
         clock.tick(SPEED)
